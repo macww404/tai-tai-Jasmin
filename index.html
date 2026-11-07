@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Анамның дүкені</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;800&family=Pacifico&family=Comfortaa:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--main:#ff8fb1;--accent:#ffd166;--bg:#fff7ef;--text:#4a3b52}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Fredoka',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+button,input,textarea,select{font-family:inherit}
+input,textarea,select{width:100%;font-size:15px;padding:8px 10px;border:2px solid #f0dde6;border-radius:12px;margin:4px 0 8px;background:#fff}
+.mini{width:auto;background:#fff;border:2px solid var(--main);color:var(--main);border-radius:10px;padding:5px 10px;font-weight:600;cursor:pointer}
+.danger{border-color:#d33;color:#d33}
+.deco span{position:fixed;font-size:28px;opacity:.3;animation:floaty 7s ease-in-out infinite;pointer-events:none}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-14px) rotate(8deg)}}
+header{text-align:center;padding:24px 16px 8px;position:relative}
+.shop-name{font-family:'Pacifico',cursive;font-size:34px;color:var(--main)}
+.bio{max-width:520px;margin:6px auto 0;opacity:.85;font-size:17px}
+.banner{margin:14px 16px;padding:34px 20px;border-radius:30px;text-align:center;color:#fff;background:linear-gradient(135deg,var(--main),var(--accent));background-size:200% 200%;animation:shimmer 8s ease infinite;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+@keyframes shimmer{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.banner h1{margin:0 0 8px;font-size:28px;text-shadow:0 2px 6px rgba(0,0,0,.15)}
+.banner p{margin:0 0 16px;font-size:17px}
+.btn-big{display:inline-block;background:#fff;color:var(--main);padding:12px 22px;border-radius:50px;font-weight:600;text-decoration:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px;padding:12px 16px 30px;max-width:1100px;margin:0 auto}
+.card{background:#fff;border-radius:26px;padding:20px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.06);transition:transform .3s;position:relative}
+.card:hover{transform:translateY(-6px)}
+.card .em{font-size:62px;display:inline-block;animation:wobble 4s ease-in-out infinite}
+.card .em img{width:110px;height:110px;object-fit:cover;border-radius:20px;display:block;margin:0 auto}
+@keyframes wobble{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+.card h3{font-family:'Comfortaa',cursive;font-size:18px;margin:8px 0 4px}
+.card .d{font-size:14px;opacity:.75;min-height:34px}
+.badge{position:absolute;top:12px;right:12px;background:var(--accent);font-weight:700;border-radius:50px;padding:4px 10px;font-size:13px}
+.price{margin:8px 0 12px;font-size:20px;font-weight:700;color:var(--main)}
+.old{text-decoration:line-through;opacity:.5;font-size:14px;margin-right:6px;font-weight:400}
+.order{background:var(--main);color:#fff;border:none;border-radius:50px;padding:10px 18px;font-weight:600;font-size:15px;width:100%;cursor:pointer}
+footer{background:#fff;text-align:center;padding:22px 16px 70px;border-top:3px dashed var(--accent);line-height:1.8}
+footer b{color:var(--main)}
+.adminBtn{position:fixed;bottom:14px;right:14px;width:44px;height:44px;border-radius:50%;border:none;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.15);font-size:20px;opacity:.6;cursor:pointer;z-index:5}
+.adminBtn:hover{opacity:1}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:10;padding:16px}
+.modal.open{display:flex}
+.box{background:#fff;border-radius:24px;padding:22px;width:100%;max-width:380px}
+.box label,.admin label{display:block;font-size:14px}
+.admin{position:fixed;top:0;left:0;height:100%;width:340px;max-width:94vw;background:#fff;box-shadow:4px 0 20px rgba(0,0,0,.15);transform:translateX(-105%);transition:transform .35s;z-index:20;overflow-y:auto;padding:16px;font-size:14px}
+.admin.open{transform:none}
+.admin h4{margin:16px 0 6px;color:var(--main)}
+.prow{background:#fdf6f9;border-radius:14px;padding:8px;margin-bottom:8px}
+.prow .r{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ahead{display:flex;justify-content:space-between;align-items:center;font-size:18px;font-weight:700}
+.thumb{width:60px;height:60px;object-fit:cover;border-radius:12px;display:block;margin:4px 0}
+</style>
+</head>
+<body>
+
+<div class="deco" id="deco"></div>
+
+<header>
+  <div class="shop-name" id="shopName"></div>
+  <p class="bio" id="bio"></p>
+</header>
+
+<section class="banner">
+  <h1 id="bTitle"></h1>
+  <p id="bSub"></p>
+  <a href="#products" class="btn-big">Тауарларға өту 🎈</a>
+</section>
+
+<main class="grid" id="products"></main>
+
+<footer>
+  <div id="footText"></div>
+  <div>💳 Kaspi: <b id="fKaspi"></b> <button class="mini" id="copyKaspi">Көшіру</button></div>
+  <div>📍 <span id="fAddr"></span></div>
+  <div>📞 <span id="fPhone"></span></div>
+</footer>
+
+<button class="adminBtn" id="adminOpen" title="Админ">🔐</button>
+
+<div class="modal" id="modal">
+  <div class="box">
+    <h3 id="mTitle"></h3>
+    <label>Аты-жөніңіз<input id="oName"></label>
+    <label>Мекенжайыңыз<textarea id="oAddr" rows="2"></textarea></label>
+    <p>Сома: <b id="oSum"></b><br><small>Төлем Kaspi картасына аударылады.</small></p>
+    <button class="order" id="oSend">WhatsApp-қа жіберу 💬</button>
+    <button class="mini" id="oClose" style="margin-top:10px;width:100%">Жабу</button>
+  </div>
+</div>
+
+<aside class="admin" id="admin"></aside>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+/* Firebase конфигурациясы */
+const firebaseConfig = {
+  apiKey: "AIzaSyAOpzxs64eJnt9O0-mxcyvw44KK7ZZyUN8",
+  authDomain: "tai-tai-jasmin1.firebaseapp.com",
+  projectId: "tai-tai-jasmin1",
+  storageBucket: "tai-tai-jasmin1.firebasestorage.app",
+  messagingSenderId: "715389337041",
+  appId: "1:715389337041:web:ceddebdd4775b7800f74f0"
+};
+
+/* Анаңыздың email-і (админ) */
+const ADMIN_EMAIL = "miraalpanoba@gmail.com";
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const ref = doc(db, "shop", "main");
+
+const DEFAULT = {
+  shop: "Анамның дүкені 🧸",
+  bio: "Балаларға сүйікті заттар, жылы сезім мен қуаныш ✨",
+  bannerTitle: "Тұсау кесер мерекесіне арналған комбо!",
+  bannerSub: "Сәбиіңіздің алғашқы қадамына дайын болыңыз",
+  footer: "Бізбен хабарласыңыз, рахмет! Сізге қуанышты сәттер тілейміз 💛",
+  kaspi: "4400 0000 0000 0000",
+  phone: "77000000000",
+  address: "Ақтау қ., Батыр ауданы",
+  font: "Fredoka",
+  main: "#ff8fb1",
+  accent: "#ffd166",
+  bg: "#fff7ef",
+  products: [
+    { id: 1, name: "Тұсау кесер комбосы «Алтын»", price: 15000, disc: 10, emoji: "🎀", desc: "Тұсау, жастық, сувенир", img: "" },
+    { id: 2, name: "Тұсау кесер комбосы «Ақ»", price: 12000, disc: 0, emoji: "👶", desc: "Негізгі жиынтық", img: "" }
+  ]
+};
+const FONTS = ["Fredoka", "Nunito", "Pacifico", "Comfortaa"];
+
+let S = structuredClone(DEFAULT);
+let user = null;
+let saveTimer = null;
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const money = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " ₸";
+const finalPrice = p => p.price * (1 - (p.disc || 0) / 100);
+
+/* Декор */
+const emo = ["🎈", "⭐", "🧸", "🍼", "🎀", "🌈", "🧦", "🐥"];
+for (let i = 0; i < 12; i++) {
+  const s = document.createElement("span");
+  s.textContent = emo[i % emo.length];
+  s.style.left = Math.random() * 95 + "vw";
+  s.style.top = Math.random() * 95 + "vh";
+  s.style.animationDelay = Math.random() * 5 + "s";
+  $("deco").appendChild(s);
+}
+
+/* Серверден деректі тыңдау (админ панелін қайта құрмай, тек көрініс жаңарады) */
+onSnapshot(ref, snap => {
+  if (snap.exists() && !saveTimer) S = { ...DEFAULT, ...snap.data() };
+  renderShop();
+});
+
+/* Өзгерісті серверге сақтау */
+function queueSave() {
+  renderShop();
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async () => {
+    saveTimer = null;
+    try { await setDoc(ref, S); }
+    catch (e) { alert("Сақталмады: " + e.message); }
+  }, 600);
+}
+
+function renderShop() {
+  const st = document.documentElement.style;
+  st.setProperty("--main", S.main);
+  st.setProperty("--accent", S.accent);
+  st.setProperty("--bg", S.bg);
+  document.body.style.background = S.bg;
+  document.body.style.fontFamily = `'${S.font}', sans-serif`;
+  $("shopName").textContent = S.shop;
+  $("bio").textContent = S.bio;
+  $("bTitle").textContent = S.bannerTitle;
+  $("bSub").textContent = S.bannerSub;
+  $("footText").textContent = S.footer;
+  $("fKaspi").textContent = S.kaspi;
+  $("fAddr").textContent = S.address;
+  $("fPhone").textContent = "+" + String(S.phone).replace(/\D/g, "");
+  document.title = S.shop;
+
+  $("products").innerHTML = S.products.map(p => `
+    <div class="card">
+      ${p.disc > 0 ? `<span class="badge">-${Number(p.disc)}%</span>` : ""}
+      <div class="em">${p.img ? `<img src="${esc(p.img)}" alt="">` : esc(p.emoji)}</div>
+      <h3>${esc(p.name)}</h3>
+      <div class="d">${esc(p.desc)}</div>
+      <div class="price">${p.disc > 0 ? `<span class="old">${money(p.price)}</span>` : ""}${money(finalPrice(p))}</div>
+      <button class="order" data-order="${esc(p.id)}">Тапсырыс беру 🛍</button>
+    </div>`).join("") || `<p style="text-align:center;opacity:.6;grid-column:1/-1">Әзірге тауар жоқ</p>`;
+}
+
+/* Тапсырыс (WhatsApp) */
+let current = null;
+$("products").addEventListener("click", e => {
+  const b = e.target.closest("[data-order]");
+  if (!b) return;
+  current = S.products.find(p => String(p.id) === b.dataset.order);
+  if (!current) return;
+  $("mTitle").textContent = current.name;
+  $("oSum").textContent = money(finalPrice(current));
+  $("modal").classList.add("open");
+});
+$("oClose").onclick = () => $("modal").classList.remove("open");
+$("modal").onclick = e => { if (e.target.id === "modal") $("modal").classList.remove("open"); };
+
+$("oSend").onclick = () => {
+  const name = $("oName").value.trim(), addr = $("oAddr").value.trim();
+  if (!name || !addr) { alert("Аты-жөніңіз бен мекенжайыңызды жазыңыз"); return; }
+  const msg = `Сәлем! Тапсырыс беремін 🛍\nТауар: ${current.name}\nСома: ${money(finalPrice(current))} (Kaspi)\nАты-жөні: ${name}\nМекенжай: ${addr}`;
+  window.open(`https://wa.me/${String(S.phone).replace(/\D/g, "")}?text=${encodeURIComponent(msg)}`, "_blank");
+};
+
+$("copyKaspi").onclick = () => {
+  navigator.clipboard?.writeText(S.kaspi);
+  $("copyKaspi").textContent = "Көшірілді ✔";
+  setTimeout(() => $("copyKaspi").textContent = "Көшіру", 1500);
+};
+
+/* Фотоны браузерде кішірейтіп, JPEG-ке айналдыру (Storage қажет емес) */
+function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        const k = Math.min(1, 400 / Math.max(img.width, img.height));
+        const c = document.createElement("canvas");
+        c.width = Math.round(img.width * k);
+        c.height = Math.round(img.height * k);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        resolve(c.toDataURL("image/jpeg", 0.7));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* АДМИН */
+function productRows() {
+  return S.products.map((p, i) => `
+    <div class="prow">
+      ${p.img ? `<img class="thumb" src="${esc(p.img)}" alt="">` : ""}
+      <label>Фото<input type="file" accept="image/*" data-photo="${i}"></label>
+      <input data-idx="${i}" data-f="emoji" value="${esc(p.emoji)}" title="Emoji">
+      <input data-idx="${i}" data-f="name" value="${esc(p.name)}" title="Атауы">
+      <div class="r">
+        <input type="number" data-idx="${i}" data-f="price" value="${p.price}" title="Баға">
+        <input type="number" data-idx="${i}" data-f="disc" value="${p.disc}" title="Скидка %">
+      </div>
+      <input data-idx="${i}" data-f="desc" value="${esc(p.desc)}" title="Сипаттама" style="margin-top:6px">
+      <button class="mini danger" data-act="del" data-idx="${i}" style="margin-top:6px">🗑 Өшіру</button>
+    </div>`).join("");
+}
+
+function loginHTML() {
+  return `
+    <div class="ahead"><span>🔐 Кіру</span><button class="mini" data-act="close">✕</button></div>
+    <label>Email<input id="lEmail" type="email"></label>
+    <label>Құпиясөз<input id="lPass" type="password"></label>
+    <button class="order" data-act="login">Кіру</button>
+    <button class="mini" data-act="forgot" style="margin-top:10px;width:100%">Құпиясөзді ұмыттым</button>
+    <p id="lMsg" style="color:#d33"></p>`;
+}
+
+function editorHTML() {
+  const f = (k, label) => `<label>${label}<input data-k="${k}" value="${esc(S[k])}"></label>`;
+  const a = (k, label) => `<label>${label}<textarea data-k="${k}" rows="2">${esc(S[k])}</textarea></label>`;
+  return `
+    <div class="ahead"><span>⚙ Баптаулар</span><button class="mini" data-act="close">✕</button></div>
+
+    <h4>Дүкен</h4>
+    ${f("shop", "Дүкен атауы")}
+    ${a("bio", "Био")}
+    ${f("bannerTitle", "Баннер тақырыбы")}
+    ${a("bannerSub", "Баннер сипаттамасы")}
+
+    <h4>Байланыс және төлем</h4>
+    ${f("kaspi", "Kaspi карта нөмірі")}
+    ${f("phone", "WhatsApp нөмірі (77xxxxxxxxx)")}
+    ${f("address", "Мекенжай")}
+    ${a("footer", "Футер мәтіні")}
+
+    <h4>Стиль</h4>
+    <label>Шрифт
+      <select data-k="font">${FONTS.map(x => `<option ${x === S.font ? "selected" : ""}>${x}</option>`).join("")}</select>
+    </label>
+    <label>Негізгі түс <input type="color" data-k="main" value="${S.main}"></label>
+    <label>Акцент түсі <input type="color" data-k="accent" value="${S.accent}"></label>
+    <label>Фон түсі <input type="color" data-k="bg" value="${S.bg}"></label>
+
+    <h4>Тауарлар</h4>
+    <div id="plist">${productRows()}</div>
+
+    <h4>Жаңа тауар қосу</h4>
+    <label>Emoji<input id="nEmoji" value="🧸"></label>
+    <label>Атауы<input id="nName"></label>
+    <label>Баға (₸)<input id="nPrice" type="number"></label>
+    <label>Скидка %<input id="nDisc" type="number" value="0"></label>
+    <label>Сипаттама<input id="nDesc"></label>
+    <button class="order" data-act="add">Қосу ➕</button>
+
+    <h4>Басқа</h4>
+    <button class="mini" data-act="logout" style="width:100%">Шығу</button>`;
+}
+
+function openAdmin() {
+  $("admin").innerHTML = user ? editorHTML() : loginHTML();
+  $("admin").classList.add("open");
+}
+
+$("adminOpen").onclick = openAdmin;
+
+onAuthStateChanged(auth, u => {
+  if (u && u.email !== ADMIN_EMAIL) { signOut(auth); return; }
+  user = u;
+  if ($("admin").classList.contains("open")) openAdmin();
+});
+
+/* Мәтін, түс, шрифт өзгерісі */
+$("admin").addEventListener("input", e => {
+  const t = e.target;
+  if (t.dataset.k) { S[t.dataset.k] = t.value; queueSave(); }
+  if (t.dataset.idx !== undefined && t.dataset.f) {
+    const p = S.products[+t.dataset.idx];
+    p[t.dataset.f] = ["price", "disc"].includes(t.dataset.f) ? Number(t.value) || 0 : t.value;
+    queueSave();
+  }
+});
+
+/* Фото таңдалғанда */
+$("admin").addEventListener("change", async e => {
+  const t = e.target;
+  if (t.type !== "file" || t.dataset.photo === undefined || !t.files[0]) return;
+  try {
+    const url = await compressImage(t.files[0]);
+    if (url.length > 400000) { alert("Фото тым үлкен, басқа сурет таңдаңыз"); return; }
+    S.products[+t.dataset.photo].img = url;
+    queueSave();
+    $("plist").innerHTML = productRows();
+  } catch (err) {
+    alert("Фото жүктелмеді: " + err.message);
+  }
+});
+
+/* Батырмалар */
+$("admin").addEventListener("click", async e => {
+  const t = e.target.closest("[data-act]");
+  if (!t) return;
+  const act = t.dataset.act;
+
+  if (act === "close") $("admin").classList.remove("open");
+
+  if (act === "login") {
+    try { await signInWithEmailAndPassword(auth, $("lEmail").value.trim(), $("lPass").value); }
+    catch { $("lMsg").textContent = "Email немесе құпиясөз қате"; }
+  }
+
+  if (act === "forgot") {
+    const mail = $("lEmail").value.trim();
+    if (!mail) { $("lMsg").textContent = "Алдымен email жазыңыз"; return; }
+    try {
+      await sendPasswordResetEmail(auth, mail);
+      $("lMsg").style.color = "#2a9d55";
+      $("lMsg").textContent = "Құпиясөзді қалпына келтіру сілтемесі поштаға жіберілді";
+    } catch { $("lMsg").textContent = "Бұл email табылмады"; }
+  }
+
+  if (act === "logout") { await signOut(auth); $("admin").classList.remove("open"); }
+
+  if (act === "del") {
+    if (confirm("Бұл тауарды өшіресіз бе?")) {
+      S.products.splice(+t.dataset.idx, 1);
+      queueSave();
+      $("plist").innerHTML = productRows();
+    }
+  }
+
+  if (act === "add") {
+    const name = $("nName").value.trim();
+    if (!name) { alert("Атауын жазыңыз"); return; }
+    S.products.push({
+      id: Date.now(),
+      name,
+      price: Number($("nPrice").value) || 0,
+      disc: Number($("nDisc").value) || 0,
+      emoji: $("nEmoji").value || "🧸",
+      desc: $("nDesc").value,
+      img: ""
+    });
+    queueSave();
+    $("plist").innerHTML = productRows();
+    $("nName").value = ""; $("nPrice").value = ""; $("nDesc").value = "";
+  }
+});
+
+renderShop();
+</script>
+</body>
+</html>
